@@ -7,7 +7,8 @@ export default class Favourite extends Component {
         this.state = {
             genres:[],
             currgen:'All Genres',
-            movies:[]
+            movies:[],
+            currText:''
         }
     }
 
@@ -44,12 +45,20 @@ export default class Favourite extends Component {
                         27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western'};
     
     let filterArr = [];
+    if(this.state.currText == ''){
+        filterArr = [...this.state.movies]
+    }
+    else{
+        filterArr=this.state.movies.filter((movieObj)=>{
+            let title = movieObj.original_title.toLowerCase();
+            return title.includes(this.state.currText.toLowerCase());
+        })
+    }
+
     if(this.state.currgen!='All Genres'){
         filterArr =  this.state.movies.filter((movieObj)=>genreids[movieObj.genre_ids[0]]==this.state.currgen)
     }
-    else{
-        filterArr = [...this.state.movies]
-    }
+    
     return (
       <>
       <div className='main'>
@@ -67,7 +76,7 @@ export default class Favourite extends Component {
             </div>
             <div className='col-9 favourites-table'>
                 <div className='row'>
-                    <input type="text" className='input-group-text col' placeholder='Search'></input>
+                    <input type="text" className='input-group-text col' placeholder='Search' value={this.state.currText} onChange={(e)=>this.setState({currText:e.target.value})}></input>
                     <input type="number" className='input-group-text col' placeholder='Rows Count'></input>
                 </div>
                 <table class="table">
