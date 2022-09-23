@@ -46,6 +46,14 @@ export default class Favourite extends Component {
         })
     }
 
+    handleDelete = (movieId) => {
+        let temp = this.state.movies.filter((movieObj)=>movieObj.id != movieId);
+        localStorage.setItem("movies",JSON.stringify(temp));
+        this.setState({
+            movies:[...temp]
+        })
+    }
+
   render() {
     // const movie = movies.results
     // console.log(movie);
@@ -114,7 +122,7 @@ export default class Favourite extends Component {
                                     <td>{genreids[movieObj.genre_ids[0]]}</td>
                                     <td>{movieObj.popularity}</td>
                                     <td>{movieObj.vote_average}</td>
-                                    <td> <button type="button" class="btn btn-danger">Delete</button></td>
+                                    <td> <button type="button" class="btn btn-danger" onClick={()=>this.handleDelete(movieObj.id)}>Delete</button></td>
                                 </tr>
                             ))}
                     </tbody>
