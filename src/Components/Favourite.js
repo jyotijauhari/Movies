@@ -15,7 +15,7 @@ export default class Favourite extends Component {
         let genreids = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',
                         27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western'};
         let data = JSON.parse(localStorage.getItem("movies") || "[]");
-        console.log("====" + data);
+        // console.log("====" + data);
 
         let temp = []   
         data.forEach(movieObj => {
@@ -28,7 +28,13 @@ export default class Favourite extends Component {
             genres:[...temp],
             movies:[...data]
         })
-        console.log("temp: " + temp);  
+        // console.log("temp: " + temp);  
+    }
+
+    handleGenreClick = (genre) => {
+        this.setState({
+            currgen:genre,
+        })
     }
 
   render() {
@@ -36,7 +42,14 @@ export default class Favourite extends Component {
     // console.log(movie);
     let genreids = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',
                         27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western'};
-          
+    
+    let filterArr = [];
+    if(this.state.currgen!='All Genres'){
+        filterArr =  this.state.movies.filter((movieObj)=>genreids[movieObj.genre_ids[0]]==this.state.currgen)
+    }
+    else{
+        filterArr = [...this.state.movies]
+    }
     return (
       <>
       <div className='main'>
@@ -47,7 +60,7 @@ export default class Favourite extends Component {
                     this.state.genres.map((genre)=>(
                         this.state.currgen==genre?
                         <li class="list-group-item" style={{background:"#3f51b5",color:'white',fontWeight:'bold'}}>{genre}</li>
-                        :<li class="list-group-item">{genre}</li>
+                        :<li class="list-group-item" onClick={()=>this.handleGenreClick(genre)}>{genre}</li>
                     ))
                 }
             </ul>
@@ -69,7 +82,7 @@ export default class Favourite extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.movies.map((movieObj)=>(
+                            filterArr.map((movieObj)=> (
                                 <tr>
                                     <td> <img src={"https://image.tmdb.org/t/p/original" + movieObj.poster_path} alt={movieObj.title} style={{width:'3rem'}}></img> {movieObj.original_title}</td>
                                     <td>{genreids[movieObj.genre_ids[0]]}</td>
@@ -77,8 +90,7 @@ export default class Favourite extends Component {
                                     <td>{movieObj.vote_average}</td>
                                     <td> <button type="button" class="btn btn-danger">Delete</button></td>
                                 </tr>
-                            ))
-                        }
+                            ))}
                     </tbody>
                  </table>
                  <nav aria-label="Page navigation example">
